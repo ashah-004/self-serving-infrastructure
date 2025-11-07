@@ -1,0 +1,47 @@
+id: subflow-aws-provision
+namespace: devops.subflows
+description: Provisions a t2.micro EC2 instance using Terraform.
+
+inputs:
+  - id: aws_region
+    type: STRING
+    description: The AWS region to deploy to.
+  - id: user_name
+    type: STRING
+    description: The user namme for tagging.
+  - id: git_repo_url
+    type: STRING
+    description: The github url that we are going to use.
+  - id: key_pair
+    type: STRING
+    description: The key pair we use for ssh
+  - id: security_group
+    type: STRING
+    description: SG we will use for out VMs.
+
+tasks:
+  - id: provision_vm_tasks
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone-terraform-repo
+        type: io.kestra.plugin.git.Clone
+        url: "{{inputs.git_repo_url}}"
+        branch: "main"
+
+      - id: run-terraform-apply
+        type: io.kestra.plugin.terraform.cli.TerraformCLI
+        env:
+          AWS_ACCESS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
+          AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
+        workingDir: "terraform"
+        commands: 
+          - terraform init
+          - terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}"" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
+        outputFiles:
+          - "terraform/ip.txt"
+      
+      - id: set_vm_ip_output
+        type: io.kestra.plugin.core.outputs.Output
+        outputs:
+          vm_ip: "{{read(outputs['run-terrform-apply'].outputFiles['terraform/ip.txt'])}}"
+

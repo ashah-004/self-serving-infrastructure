@@ -1,0 +1,30 @@
+id: subflow-aws-destroy
+namespace: devops.subflows
+description: DEstroysthe Terraform-managed Ec2 instance.
+
+inputs: 
+  - id: aws_region
+    type: STRING
+    description: The aws region where resources exists
+  - id: git_repo_url
+    type: STRING
+    description: The github url that we are going to use.
+
+tasks:
+  - id: destroy_vm_tasks
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone-terraform-repo
+        type: io.kestra.plugin.git.Clone
+        url: "{{inputs.git_repo_url}}"
+        branch: "main"
+
+      - id: run-terraform-destroy
+        type: io.kestra.plugin.terraform.cli.TerraformCLI
+        env: 
+          AWS_ACCECSS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
+          AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
+        workingDir: "terraform"
+        commands:
+          - terraform_init
+          - terrform destroy -auto-approve -var="aws_region={inputs.aws_region}"

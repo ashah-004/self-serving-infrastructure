@@ -1,0 +1,80 @@
+id: self-service-orchestrator
+namespace: devops.selfservice
+
+inputs:
+  - id: branch_name
+    type: STRING
+    defaults: "main"
+  - id: aws_region
+    type: STRING
+    defaults: "{{kestra.variables.globals.aws_default_region}}"
+  - id: user_name
+    type: STRING
+    defaults: "dev-team"
+
+tasks:
+  - id: provision_vm
+    type: io.kestra.plugin.core.flow.Flow
+    namespace: devops.subflows
+    flowId: subflow-aws-provision
+    inputs: 
+      aws_region: "{{inputs.aws_region}}"
+      user_name: "{{inputs.user_name}}"
+      git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
+      key_pair: "{{kestra.variables.globals.aws_default_key_pair}}"
+      security_group: "{{kestra.variables.globals.aws_default_sg}}"
+
+
+  - id: configure-vm
+    type: io.kestra.plugin.core.flow.Flow
+    namespace: devops.subflows
+    flowId: subflow-ansible-configure
+    inputs: 
+      vm_ip: "{{outputs.provision_vm.outputs.vm_ip}}"
+      branch_name: "{{inputs.branch_name}}"
+      git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
+
+
+  - id: notify-ready
+    type: io.kestra.plugin.notifications.slack.SlackSend
+    url: "{{secret('SLACK_WEBHOOK_URL')}}"
+    payload: |
+      {
+        "text": "✅ Hey @{{ inputs.user_name }}, your AWS Free Tier environment is ready!\nAccess it at: http://{{ outputs.provision_vm.outputs.vm_ip }}\nThis VM will be destroyed in 2 hours."
+      }
+
+  - id: wait-for-2-hours
+    type: io.kestra.plugin.core.flow.Pause
+    duration: "PT2H"
+
+  - id: destroy_vm
+    type: io.kestra.plugin.core.flow.Flow
+    namespace: devops.subflows
+    flowId: subflow-aws-destroy
+    inputs: 
+      aws_region: "{{inputs.aws_region}}"
+      git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
+
+  - id: notify-destroyed
+    type: io.kestra.plugin.notifications.slack.SlackSend
+    url: "{{secret('SLACK_WEBHOOK_URL')}}"
+    payload: |
+      {
+        "text": "🗑️ Your 2-hour AWS environment for `{{ inputs.branch_name }}` has been successfully destroyed."
+      }
+
+listeners:
+  - id: on-failure-alert
+    tasks: 
+      - id: send-urgent-alert
+        type: io.kestra.plugin.notifications.slack.SlackSend
+        url: "{{secret('SLACK_WEBHOOK_URL')}}"
+        channel: "#all-new-workspace"
+        conditions:
+          - type: io.kestra.plugin.core.condition.ExecutionStatusCondition
+            in:
+              - FAILED
+        payload: |
+          {
+            "text": "🚨 URGENT: Kestra flow `{{ flow.id }}` failed! \nTask `{{ taskrun.id }}` failed with error: {{ taskrun.attempts[0].outputs.error.message }}. \n**ACTION REQUIRED:** A `t2.micro` VM may still be running. Please log in to the AWS console in region `{{ inputs.aws_region }}` and terminate it manually to avoid costs!"
+          }

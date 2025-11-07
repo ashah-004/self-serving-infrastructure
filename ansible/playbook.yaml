@@ -1,0 +1,25 @@
+- name: Configure Dev Server
+  hosts: dev-server
+  become: yes
+  vars: 
+    app_branch: "main"
+
+  tasks:
+    - name: Install Git and Nginx
+      ansible.builtin.yum:
+        name:
+          - nginx
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Start Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+    
+    - name: Create a 'Hello World' index page
+      ansible.builtin.copy:
+        content: "<html><body><h1>Welcome to your Kestra VM!</h1><p>This page was deployed by Ansible.</p></body></html>"
+        dest: /usr/share/nginx/html/index.html 

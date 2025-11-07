@@ -1,0 +1,41 @@
+id: subflow-ansible-configure
+namespace: devops.subflows
+description: Configures a VM with Ansible
+
+inputs: 
+  - id: vm_ip
+    type: STRING
+    description: The IP address of the VM to configure.
+  - id: branch_name
+    type: STRING
+    description: The apllication branch to deploy.
+  - id: git_repo_url
+    type: STRING
+    description: The github url that we are going to use.
+  - id: ansible_user
+    type: STRING
+    description: The ansible user that we will be using.
+  - id: ansible_playbook
+    type: STRING
+    description: The ansible playbook that we will run.
+
+tasks:
+  - id: configure_vm_tasks
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone-ansible-repo
+        type: io.kestra.plugin.git.Clone
+        url: "{{inputs.git_repo_url}}"
+        branch: "main"
+      
+      - id: run-ansible
+        type: io.kestra.plugin.ansible.cli.AnsibleCLI
+        inputFiles:
+          ansible/inventory.ini: |
+            [dev-server]
+            {{inputs.vm_ip}} ansible_user={{inputs.ansible_user}}
+          ansible/kestra-key.pem: "{{secret('AWS_SSH_KEY_PEM')}}"
+        workingDir: "ansible"
+        commands:
+          - chmod 600 kestra-key.pem
+          - ansible-playbook -i inventory.ini {{inputs.ansible_playbook}} --private-key kestra-key.pem --extra-vars "app_branch={{inputs.branch_name}}"
