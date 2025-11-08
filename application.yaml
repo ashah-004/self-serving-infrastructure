@@ -9,3 +9,14 @@ kestra:
 
       ansible_default_playbook: "playbook.yaml"
       ansible_default_user: "ec2-user"
+  repository:
+    type: git
+    poll-interval: "PT1M"
+
+    url: "https://github.com/ashah-004/self-serving-infrastructure.git"
+    branch: "main"
+
+    flow-path: "kestra"
+    github:
+      token: "{{secret('GITHUB_PAT')}}"
+      user: "ashah-004"
