@@ -2,21 +2,15 @@ kestra:
   variables:
     globals:
       git_monorepo_url: "https://github.com/ashah-004/self-serving-infrastructure.git"
-
       aws_default_region: "us-west-1"
       aws_default_key_pair: "kestra-key"
       aws_default_sg: "sg-0950a527ea965e1c7"
-
       ansible_default_playbook: "playbook.yaml"
       ansible_default_user: "ec2-user"
+
   repository:
     type: git
     poll-interval: "PT1M"
-
-    url: "https://github.com/ashah-004/self-serving-infrastructure.git"
     branch: "main"
-
     flow-path: "kestra"
-    github:
-      token: "{{secret('GITHUB_PAT')}}"
-      user: "ashah-004"
+    url: "https://github.com/ashah-004/self-serving-infrastructure.git"
