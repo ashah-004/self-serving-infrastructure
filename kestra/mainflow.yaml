@@ -36,7 +36,7 @@ tasks:
 
 
   - id: notify-ready
-    type: io.kestra.plugin.notifications.slack.SlackSend
+    type: io.kestra.plugin.notifications.slack.SlackExecution
     url: "{{secret('SLACK_WEBHOOK_URL')}}"
     payload: |
       {
@@ -56,7 +56,7 @@ tasks:
       git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
 
   - id: notify-destroyed
-    type: io.kestra.plugin.notifications.slack.SlackSend
+    type: io.kestra.plugin.notifications.slack.SlackExecution
     url: "{{secret('SLACK_WEBHOOK_URL')}}"
     payload: |
       {
@@ -67,7 +67,7 @@ listeners:
   - id: on-failure-alert
     tasks: 
       - id: send-urgent-alert
-        type: io.kestra.plugin.notifications.slack.SlackSend
+        type: io.kestra.plugin.notifications.slack.SlackExecution
         url: "{{secret('SLACK_WEBHOOK_URL')}}"
         channel: "#all-new-workspace"
         conditions:
