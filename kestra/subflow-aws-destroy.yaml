@@ -1,6 +1,6 @@
 id: subflow-aws-destroy
 namespace: devops.subflows
-description: DEstroysthe Terraform-managed Ec2 instance.
+description: Destroys the Terraform-managed Ec2 instance.
 
 inputs: 
   - id: aws_region

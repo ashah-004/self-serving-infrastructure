@@ -1,0 +1,35 @@
+id: git_sync_self_serving_infra
+namespace: kestra-project
+
+tasks:
+  - id: sync_flows
+    type: io.kestra.plugin.git.SyncFlows
+    
+    # --- Start Editing Here ---
+
+    # 1. SET THE REPO URL
+    # Replace with your public repository's HTTPS URL
+    url: https://github.com/ashah-004/self-serving-infrastructure.git
+    
+    # 2. SET THE BRANCH
+    branch: main
+    
+    # 3. SET THE FOLDER TO SYNC
+    # This must match the folder from your image
+    gitDirectory: kestra
+    
+    # 4. SET THE DESTINATION NAMESPACE
+    # This is the Kestra namespace your flows will be loaded into.
+    # For example: 'prod.self_service'
+    targetNamespace: prod.self_service
+    
+    # --- Stop Editing Here ---
+    
+    # If true, removes flows in Kestra that are no longer in Git.
+    # This keeps Kestra perfectly in sync with Git.
+    delete: true
+
+triggers:
+  - id: hourly_sync
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 * * * *" # Runs at the top of every hour
