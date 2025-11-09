@@ -14,7 +14,7 @@ inputs:
 
 tasks:
   - id: provision_vm
-    type: io.kestra.plugin.core.flow.SubFlow
+    type: io.kestra.plugin.core.flow.Subflow
     namespace: devops.subflows
     flowId: subflow-aws-provision
     inputs: 
@@ -26,7 +26,7 @@ tasks:
 
 
   - id: configure-vm
-    type: io.kestra.plugin.core.flow.SubFlow
+    type: io.kestra.plugin.core.flow.Subflow
     namespace: devops.subflows
     flowId: subflow-ansible-configure
     inputs: 
@@ -48,7 +48,7 @@ tasks:
     duration: "PT2H"
 
   - id: destroy_vm
-    type: io.kestra.plugin.core.flow.SubFlow
+    type: io.kestra.plugin.core.flow.Subflow
     namespace: devops.subflows
     flowId: subflow-aws-destroy
     inputs: 
