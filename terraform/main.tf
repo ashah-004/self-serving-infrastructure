@@ -59,9 +59,9 @@ resource "aws_instance" "web" {
     }
 }
 
-resource "local_file" "vm_ip_file" {
-    content = aws_instance.web.public_ip
-    filename = "ip.txt"
-}
+# resource "local_file" "vm_ip_file" {
+#     content = aws_instance.web.public_ip
+#     filename = "ip.txt"
+# }
 
 
