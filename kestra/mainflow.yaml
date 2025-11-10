@@ -7,21 +7,20 @@ inputs:
     defaults: "main"
   - id: aws_region
     type: STRING
-    defaults: "{{kestra.variables.globals.aws_default_region}}"
+    defaults: "{{vars.aws_default_region}}"
   - id: user_name
     type: STRING
     defaults: "dev-team"
 
 variables:
-  globals:
-    git_monorepo_url: "https://github.com/ashah-004/self-serving-infrastructure.git"
+  git_monorepo_url: "https://github.com/ashah-004/self-serving-infrastructure.git"
 
-    aws_default_region: "us-west-1"
-    aws_default_key_pair: "kestra-key"
-    aws_default_sg: "sg-0950a527ea965e1c7"
+  aws_default_region: "us-west-1"
+  aws_default_key_pair: "kestra-key"
+  aws_default_sg: "sg-0950a527ea965e1c7"
 
-    ansible_default_playbook: "playbook.yaml"
-    ansible_default_user: "ec2-user"
+  ansible_default_playbook: "playbook.yaml"
+  ansible_default_user: "ec2-user"
 
 tasks:
   - id: provision_vm
@@ -31,9 +30,9 @@ tasks:
     inputs: 
       aws_region: "{{inputs.aws_region}}"
       user_name: "{{inputs.user_name}}"
-      git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
-      key_pair: "{{kestra.variables.globals.aws_default_key_pair}}"
-      security_group: "{{kestra.variables.globals.aws_default_sg}}"
+      git_repo_url: "{{vars.git_monorepo_url}}"
+      key_pair: "{{vars.aws_default_key_pair}}"
+      security_group: "{{vars.aws_default_sg}}"
 
 
   - id: configure-vm
@@ -43,7 +42,7 @@ tasks:
     inputs: 
       vm_ip: "{{outputs.provision_vm.outputs.vm_ip}}"
       branch_name: "{{inputs.branch_name}}"
-      git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
+      git_repo_url: "{{vars.git_monorepo_url}}"
 
 
   - id: notify-ready
@@ -64,7 +63,7 @@ tasks:
     flowId: subflow-aws-destroy
     inputs: 
       aws_region: "{{inputs.aws_region}}"
-      git_repo_url: "{{kestra.variables.globals.git_monorepo_url}}"
+      git_repo_url: "{{vars.git_monorepo_url}}"
 
   - id: notify-destroyed
     type: io.kestra.plugin.notifications.slack.SlackExecution
