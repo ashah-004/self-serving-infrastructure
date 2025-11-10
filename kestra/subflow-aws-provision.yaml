@@ -1,5 +1,5 @@
 id: subflow-aws-provision
-namespace: devops.subflows
+namespace: prod.self_service
 description: Provisions a t2.micro EC2 instance using Terraform.
 
 inputs:
@@ -43,5 +43,5 @@ tasks:
       - id: set_vm_ip_output
         type: io.kestra.plugin.core.output.OutputValues
         outputs:
-          vm_ip: "{{read(outputs['run-terrform-apply'].outputFiles['terraform/ip.txt'])}}"
+          vm_ip: "{{read(outputs['run-terraform-apply'].outputFiles['terraform/ip.txt'])}}"
 

@@ -1,5 +1,5 @@
 id: subflow-ansible-configure
-namespace: devops.subflows
+namespace: prod.self_service
 description: Configures a VM with Ansible
 
 inputs: 
@@ -14,9 +14,11 @@ inputs:
     description: The github url that we are going to use.
   - id: ansible_user
     type: STRING
+    defaults: "ec2-user"
     description: The ansible user that we will be using.
   - id: ansible_playbook
     type: STRING
+    defaults: "playbook.yaml"
     description: The ansible playbook that we will run.
 
 tasks:

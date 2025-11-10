@@ -15,7 +15,7 @@ inputs:
 tasks:
   - id: provision_vm
     type: io.kestra.plugin.core.flow.Subflow
-    namespace: devops.subflows
+    namespace: prod.self_service
     flowId: subflow-aws-provision
     inputs: 
       aws_region: "{{inputs.aws_region}}"
@@ -27,7 +27,7 @@ tasks:
 
   - id: configure-vm
     type: io.kestra.plugin.core.flow.Subflow
-    namespace: devops.subflows
+    namespace: prod.self_service
     flowId: subflow-ansible-configure
     inputs: 
       vm_ip: "{{outputs.provision_vm.outputs.vm_ip}}"
@@ -49,7 +49,7 @@ tasks:
 
   - id: destroy_vm
     type: io.kestra.plugin.core.flow.Subflow
-    namespace: devops.subflows
+    namespace: prod.self_service
     flowId: subflow-aws-destroy
     inputs: 
       aws_region: "{{inputs.aws_region}}"

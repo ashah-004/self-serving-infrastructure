@@ -1,5 +1,5 @@
 id: subflow-aws-destroy
-namespace: devops.subflows
+namespace: prod.self_service
 description: Destroys the Terraform-managed Ec2 instance.
 
 inputs: 
@@ -22,9 +22,9 @@ tasks:
       - id: run-terraform-destroy
         type: io.kestra.plugin.terraform.cli.TerraformCLI
         env: 
-          AWS_ACCECSS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
+          AWS_ACCESS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
           AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
         workingDir: "terraform"
         commands:
-          - terraform_init
-          - terrform destroy -auto-approve -var="aws_region={inputs.aws_region}"
+          - terraform init
+          - terraform destroy -auto-approve -var="aws_region={{inputs.aws_region}}"
