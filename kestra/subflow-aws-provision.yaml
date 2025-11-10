@@ -41,7 +41,7 @@ tasks:
         #   - "terraform/ip.txt"
       
       - id: set_vm_ip_output
-        type: io.kestra.plugin.core.flow.Return
-        outputs:
+        type: io.kestra.plugin.core.output.OutputValues
+        values:
           vm_ip: "{{outputs['run-terraform-apply'].outputs.vm_public_ip}}"
 
