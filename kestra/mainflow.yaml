@@ -7,7 +7,7 @@ inputs:
     defaults: "main"
   - id: aws_region
     type: STRING
-    defaults: "{{vars.aws_default_region}}"
+    defaults: "us-west-1"
   - id: user_name
     type: STRING
     defaults: "dev-team"
