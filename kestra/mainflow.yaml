@@ -40,7 +40,7 @@ tasks:
     namespace: prod.self_service
     flowId: subflow-ansible-configure
     inputs: 
-      vm_ip: "{{outputs.provision_vm.vm_ip}}"
+      vm_ip: "{{outputs.provision_vm.outputs.vm_ip}}"
       branch_name: "{{inputs.branch_name}}"
       git_repo_url: "{{vars.git_monorepo_url}}"
 
