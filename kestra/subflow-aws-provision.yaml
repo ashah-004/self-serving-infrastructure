@@ -31,7 +31,7 @@ tasks:
         type: io.kestra.plugin.scripts.shell.Commands
         runner: DOCKER  # Use the Docker runner
         docker:
-          image: alpine/git:latest # Use an image that has git
+          image: hashicorp/terraform:latest # Use an image that has git
         commands:
           # This command clones the repo into a new subfolder
           # named "self-serving-infrastructure"
