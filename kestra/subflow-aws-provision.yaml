@@ -44,8 +44,9 @@ tasks:
           AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
         # workingDirectory: "terraform"
         commands: 
-          - terraform -chdir=terraform init
+          - terraform -chdir=terraform init -input=false
           - terraform -chdir=terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
+          - terraform -chdir=terraform output -raw vm_public_ip > terraform/ip.txt
         outputFiles:
           - "terraform/ip.txt"
 

@@ -11,6 +11,12 @@ terraform {
         version = "~> 2.4"
     }
   }
+
+  backend "s3" {
+    bucket = "my-kestra-tf-state-bucket"
+    key = "self-service/terraform.tfstate"
+    region="us-west-1"
+  }
 }
 
 variable "aws_region" {
