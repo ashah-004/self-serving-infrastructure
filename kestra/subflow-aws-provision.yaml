@@ -28,6 +28,15 @@ tasks:
         url: "{{inputs.git_repo_url}}"
         branch: "main"
 
+      # --- ADD THIS NEW TASK ---
+      - id: list-files
+        type: io.kestra.plugin.scripts.shell.Commands
+        runner: PROCESS
+        commands:
+          - echo "--- Listing files recursively ---"
+          - ls -laR
+      # --- END OF NEW TASK ---
+
       - id: run-terraform-apply
         type: io.kestra.plugin.terraform.cli.TerraformCLI
         env:
@@ -40,14 +49,7 @@ tasks:
         # outputFiles:
         #   - "terraform/ip.txt"
 
-      # --- ADD THIS NEW TASK ---
-      - id: list-files
-        type: io.kestra.plugin.scripts.shell.Commands
-        runner: PROCESS
-        commands:
-          - echo "--- Listing files recursively ---"
-          - ls -laR
-      # --- END OF NEW TASK ---
+      
       
       - id: set_vm_ip_output
         type: io.kestra.plugin.core.output.OutputValues
