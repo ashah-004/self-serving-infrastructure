@@ -28,7 +28,15 @@ tasks:
         url: "{{inputs.git_repo_url}}"
         branch: "main"
 
-
+      # --- ADD THIS NEW DEBUGGING TASK ---
+      - id: log-terraform-files
+        type: io.kestra.plugin.scripts.shell.Commands
+        runner: PROCESS  # This is fast and runs on the Kestra worker
+        commands:
+          - echo "--- Listing files in 'terraform' directory BEFORE apply: ---"
+          # List the contents of the 'terraform' subfolder
+          - ls -laR terraform 
+      # --- END OF NEW TASK ---
       - id: run-terraform-apply
         type: io.kestra.plugin.terraform.cli.TerraformCLI
         env:
