@@ -47,12 +47,12 @@ tasks:
           - terraform -chdir=terraform init
           - terraform -chdir=terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
         outputFiles:
-          - "ip.txt"
+          - "terraform/ip.txt"
 
       
       
       - id: set_vm_ip_output
         type: io.kestra.plugin.core.output.OutputValues
         values:
-          vm_ip: "{{ read(outputs['run-terraform-apply'].outputFiles['ip.txt']) }}"
+          vm_ip: "{{ read(outputs['run-terraform-apply'].outputFiles['terraform/ip.txt']) }}"
 
