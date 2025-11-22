@@ -29,6 +29,15 @@ tasks:
         type: io.kestra.plugin.git.Clone
         url: "{{inputs.git_repo_url}}"
         branch: "main"
+
+      - id: log-terraform-files
+        type: io.kestra.plugin.scripts.shell.Commands
+        runner: PROCESS
+        commands:
+          # This is a STRING
+          - "echo '--- Listing files in 'terraform' directory BEFORE apply: ---'"
+          # This is also a STRING
+          - "ls -laR ansible"
       
       - id: run-ansible
         type: io.kestra.plugin.ansible.cli.AnsibleCLI
@@ -39,5 +48,5 @@ tasks:
           kestra-key.pem: "{{secret('AWS_SSH_KEY_PEM')}}"
         # workingDir: "ansible"
         commands:
-          - chmod -chdir=ansible 600 kestra-key.pem
+          - chmod 600 kestra-key.pem
           - ansible-playbook -chdir=ansible -i inventory.ini {{inputs.ansible_playbook}} --private-key kestra-key.pem --extra-vars "app_branch={{inputs.branch_name}}"
