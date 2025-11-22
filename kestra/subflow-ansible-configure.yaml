@@ -37,7 +37,6 @@ tasks:
             [dev-server]
             {{inputs.vm_ip}} ansible_user={{inputs.ansible_user}}
           kestra-key.pem: "{{secret('AWS_SSH_KEY_PEM')}}"
-          playbook.yaml: "{{ read('playbook.yaml') }}"
         # workingDir: "ansible"
         commands:
           - chmod -chdir=ansible 600 kestra-key.pem
