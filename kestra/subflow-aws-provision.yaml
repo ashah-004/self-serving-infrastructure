@@ -33,7 +33,7 @@ tasks:
         env:
           AWS_ACCESS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
           AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
-        workingDir: "terraform"
+        workingDir: "self-serving-infrastructure/terraform"
         commands: 
           - terraform init
           - terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
