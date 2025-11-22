@@ -23,49 +23,29 @@ tasks:
   - id: provision_vm_tasks
     type: io.kestra.plugin.core.flow.WorkingDirectory
     tasks:
-      # - id: clone-terraform-repo
-      #   type: io.kestra.plugin.git.Clone
-      #   url: "{{inputs.git_repo_url}}"
-      #   branch: "main"
       - id: clone-terraform-repo
+        type: io.kestra.plugin.git.Clone
+        url: "{{inputs.git_repo_url}}"
+        branch: "main"
+
+      - id: log-terraform-files
         type: io.kestra.plugin.scripts.shell.Commands
-        runner: DOCKER  # Use the Docker runner
-        docker:
-          image: bitnami/git:latest # Use an image that has git
+        runner: PROCESS
         commands:
-          # This command clones the repo into a new subfolder
-          # named "self-serving-infrastructure"
-          - git clone --depth 1 --branch main {{inputs.git_repo_url}}
-
-      # - id: log-terraform-files
-      #   type: io.kestra.plugin.scripts.shell.Commands
-      #   runner: PROCESS
-      #   commands:
-      #     # This is a STRING
-      #     - "echo '--- Listing files in 'terraform' directory BEFORE apply: ---'"
-      #     # This is also a STRING
-      #     - "ls -laR terraform"
-
+          # This is a STRING
+          - "echo '--- Listing files in 'terraform' directory BEFORE apply: ---'"
+          # This is also a STRING
+          - "ls -laR terraform"
+          
       - id: run-terraform-apply
         type: io.kestra.plugin.terraform.cli.TerraformCLI
         env:
           AWS_ACCESS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
           AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
-        # The path is now "cloned_folder_name/terraform_folder_name"
-        workingDir: "self-serving-infrastructure/terraform" 
+        workingDirectory: "terraform"
         commands: 
           - terraform init
           - terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
-
-      # - id: run-terraform-apply
-      #   type: io.kestra.plugin.terraform.cli.TerraformCLI
-      #   env:
-      #     AWS_ACCESS_KEY_ID: "{{secret('AWS_ACCESS_KEY_ID')}}"
-      #     AWS_SECRET_ACCESS_KEY: "{{secret('AWS_SECRET_ACCESS_KEY')}}"
-      #   workingDir: "terraform"
-      #   commands: 
-      #     - terraform init
-      #     - terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
         # outputFiles:
         #   - "terraform/ip.txt"
 
