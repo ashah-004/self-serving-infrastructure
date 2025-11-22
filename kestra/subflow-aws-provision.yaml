@@ -51,9 +51,8 @@ tasks:
           - "terraform/ip.txt"
 
       
-      
-      - id: set_vm_ip_output
-        type: io.kestra.plugin.core.output.OutputValues
-        values:
-          vm_ip: "{{ read(outputs['run-terraform-apply'].outputFiles['terraform/ip.txt']) }}"
+outputs:
+  - id: vm_ip
+    type: STRING
+    value: "{{ read(outputs['run-terraform-apply'].outputFiles['terraform/ip.txt']) }}"
 
