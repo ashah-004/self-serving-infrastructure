@@ -46,7 +46,6 @@ tasks:
         commands: 
           - terraform -chdir=terraform init
           - terraform -chdir=terraform apply -auto-approve -var="aws_region={{inputs.aws_region}}" -var="user_name={{inputs.user_name}}" -var="key_name={{inputs.key_pair}}" -var="security_group_id={{inputs.security_group}}"
-          - terraform -chdir=terraform output -json
         outputFiles:
           - "ip.txt"
 
