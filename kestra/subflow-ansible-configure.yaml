@@ -48,6 +48,6 @@ tasks:
             {{inputs.vm_ip}} ansible_user={{inputs.ansible_user}}
           kestra-key.pem: "{{secret('AWS_SSH_KEY_PEM')}}"
         commands:
-          - playbook : ansible/playbook.yaml
+          # - playbook : ansible/playbook.yaml
           - chmod 600 kestra-key.pem
           - ansible-playbook -i inventory.ini {{inputs.ansible_playbook}} --private-key kestra-key.pem --extra-vars "app_branch={{inputs.branch_name}}"
