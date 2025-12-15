@@ -41,7 +41,7 @@ tasks:
       
       - id: run-ansible
         type: io.kestra.plugin.ansible.cli.AnsibleCLI
-        workingDir: "ansible"
+        # workingDir: "ansible"
         inputFiles:
           inventory.ini: |
             [dev-server]
@@ -50,4 +50,4 @@ tasks:
         commands:
           # - playbook : ansible/playbook.yaml
           - chmod 600 kestra-key.pem
-          - ansible-playbook -i inventory.ini {{inputs.ansible_playbook}} --private-key kestra-key.pem --extra-vars "app_branch={{inputs.branch_name}}"
+          - ansible-playbook -i inventory.ini ansible/playbook.yaml --private-key kestra-key.pem --extra-vars "app_branch={{inputs.branch_name}}"
