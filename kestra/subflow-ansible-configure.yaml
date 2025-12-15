@@ -41,6 +41,8 @@ tasks:
       
       - id: run-ansible
         type: io.kestra.plugin.ansible.cli.AnsibleCLI
+        env :
+          ANSIBLE_HOST_KEY_CHECKING: "False"
         # workingDir: "ansible"
         inputFiles:
           inventory.ini: |
